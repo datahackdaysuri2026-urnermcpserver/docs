@@ -1,0 +1,23 @@
+[project]
+authors = [{name = "Matthias Amacher", email = "matthias.amacher@gmail.com"}]
+dependencies = ["open-webui>=0.8.12,<0.9", "mcp", "mcpo"]
+name = "testmcp"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[tool.pixi.pypi-dependencies]
+testmcp = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+python = "3.11.*"
+itsdangerous = ">=2.2.0,<3"
