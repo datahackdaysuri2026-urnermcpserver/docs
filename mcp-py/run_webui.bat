@@ -1,0 +1,1 @@
+pixi run open-webui serve

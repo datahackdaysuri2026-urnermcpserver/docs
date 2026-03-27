@@ -1,0 +1,1 @@
+pixi run python -m testmcp.main
