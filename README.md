@@ -12,3 +12,5 @@ To start the MCP Host consisting of the Open Web UI, run the following command. 
 cd mcphost
 docker compose up -d
 ```
+
+Go to the connections [http://localhost:3000/admin/settings/connections](http://localhost:3000/admin/settings/connections) and use the **Manage Ollama** option to add a new model to the Ollama server. You can use the following model `llama3.1:8b` or any other model available in the [Ollama Registry](https://ollama.com/registry).
