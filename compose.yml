@@ -1,13 +1,22 @@
 services:
 
+  mcp-py:
+    build:
+      context: ./mcp-py
+      dockerfile: Dockerfile
+    container_name: mcp-py
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped
     volumes:
       - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
+    # ports:
+    #   - "11434:11434"
     # Uncomment for GPU support (NVIDIA)
     # deploy:
     #   resources:
