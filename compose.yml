@@ -5,6 +5,8 @@ services:
       context: ./mcp-py
       dockerfile: Dockerfile
     container_name: mcp-py
+    environment:
+      - TZ=Europe/Zurich
     restart: unless-stopped
     volumes:
       - ./data:/data
@@ -14,6 +16,8 @@ services:
       context: ./mcp-rust
       dockerfile: Dockerfile
     container_name: mcp-rust
+    environment:
+      - TZ=Europe/Zurich
     restart: unless-stopped
     volumes:
       - ./data:/data
