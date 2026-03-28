@@ -1,11 +1,10 @@
 import json
 from typing import Optional
 from difflib import SequenceMatcher
+from datetime import date, datetime
 
 from pydantic import BaseModel
 from pathlib import Path
-
-from datetime import datetime
 
 from testmcp.base import UriMCPTool, register_as_resource, register_as_tool
 
@@ -16,7 +15,7 @@ import os
 class EventResponse(BaseModel):
     description: Optional[str] = None
     date: Optional[str] = None
-    time: Optional[str] = None
+    #time: Optional[str] = None
     place: Optional[str] = None
     info_url : Optional[str] = None
     organisation: Optional[str] = None
@@ -76,31 +75,6 @@ class EventsTool(UriMCPTool):
         
         return events
 
-    
-
-    #@register_as_resource("data://events")
-    async def events(self) -> list[EventResponse]:
-        """Return all events as a list of EventResponse objects."""
-        #ctx = get_context()
-        #await ctx.info("Fetching events resource...")
-        
-        events = self.eventfeed.events()
-
-        response = list()
-        for ev in events:
-            details = ev.offerDetail[0] if ev.offerDetail else None
-
-            desc = details.shortDescription if details else None
-            ev_date = ev.schedules.dates[0].startDate if ev.schedules and ev.schedules.dates else None
-            ev_time = ev.schedules.dates[0].startTime if ev.schedules and ev.schedules.dates else None
-            ev_place = ev.address.city if ev.address else None
-            info_url = details.detailUrl if details else None
-            organisation = ev.bpName if ev.bpName else None
-
-            response.append(EventResponse(description=desc, date=ev_date, time=ev_time, place=ev_place, info_url=info_url, organisation=organisation))
-        
-        return response
-
 
     def _fuzzy_match(self, text1: str, text2: str) -> float:
         """Calculate fuzzy match score between two strings (0.0 to 1.0)."""
@@ -115,7 +89,7 @@ class EventsTool(UriMCPTool):
         normalized = place.strip().lower()
         return normalized if normalized else None
 
-    async def _search_events(self, keywords: Optional[list[str]] = None, date: Optional[str] = None, place: Optional[str] = None) -> list[EventResponse]:
+    async def _search_events(self, keywords: Optional[list[str]] = None, date: Optional[date] = None, place: Optional[str] = None) -> list[EventResponse]:
         """Search for events with strict date/place filters and fuzzy keyword ranking.
         Args:
             keywords: List of keywords to match against event descriptions.
@@ -124,6 +98,7 @@ class EventsTool(UriMCPTool):
         """
 
         events = self.eventfeed.events()
+
         scored_events: list[tuple[float, EventResponse]] = []
         keyword_threshold = 0.35
         normalized_place = self._normalize_place(place)
@@ -132,16 +107,25 @@ class EventsTool(UriMCPTool):
             details = ev.offerDetail[0] if ev.offerDetail else None
 
             desc = details.shortDescription if details else None
-            ev_date = ev.schedules.dates[0].startDate if ev.schedules and ev.schedules.dates else None
-            ev_time = ev.schedules.dates[0].startTime if ev.schedules and ev.schedules.dates else None
+            
+            ev_dates = ev.schedules.dates if ev.schedules and ev.schedules.dates else []
+            ev_start_dates = [d.startDate for d in ev_dates]  # Sort by start date
+            #ev_start_times = [d.startTime for d in ev_dates]  # Sort by start date
+            
+            
             ev_place = ev.address.city if ev.address else None
             info_url = details.detailUrl if details else None
             organisation = ev.bpName if ev.bpName else None
 
-            # Strict date filter
-            if date and ev_date != date:
+            # Strict date filter            
+            has_matching_date = False
+            for ev_date in ev_start_dates:
+                if date and ev_date == date:
+                    has_matching_date = True
+                    break
+            if date and not has_matching_date:
                 continue
-
+            
             # Strict place filter (case-insensitive)
             if normalized_place:
                 if not ev_place or self._normalize_place(ev_place) != normalized_place:
@@ -162,7 +146,7 @@ class EventsTool(UriMCPTool):
                     continue
                 score = avg_keyword_score
 
-            scored_events.append((score, EventResponse(description=desc, date=ev_date, time=ev_time, place=ev_place, info_url=info_url, organisation=organisation)))
+            scored_events.append((score, EventResponse(description=desc, date=ev_date.isoformat() if ev_date else None, place=ev_place, info_url=info_url, organisation=organisation)))
 
         # Sort by score in descending order
         scored_events.sort(key=lambda x: x[0], reverse=True)
@@ -172,14 +156,13 @@ class EventsTool(UriMCPTool):
 
         return response
 
-    def _parse_date(self, date_str: str) -> str:
-        """ Parse a date string in various formats and return a formatted date string."""
-        target_format = "%d.%m.%Y"  # Desired output format
-        date_formats = ["%d.%m.%Y", "%d.%m", "%d %B", "%Y", "%B %Y", "%B"] # Add more formats as needed
+    def _parse_date(self, date_str: str) -> date:
+        """Parse a date string in various formats and return a date instance."""
+        date_formats = ["%Y-%m-%d", "%d.%m.%Y", "%d.%m", "%d %B", "%Y", "%B %Y", "%B"]
         for fmt in date_formats:
             try:
-                return datetime.strptime(date_str, fmt).date().strftime(target_format)
+                return datetime.strptime(date_str, fmt).date()
             except ValueError:
                 continue
         
-        return datetime.today().date().strftime("%d.%m.%Y")  # Default to today
+        return datetime.today().date()  # Default to today

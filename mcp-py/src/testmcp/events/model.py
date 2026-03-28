@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from datetime import date, datetime, time
 from typing import Optional
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class TagRef(BaseModel):
@@ -37,10 +38,24 @@ class Classification(BaseModel):
 
 
 class ScheduleDate(BaseModel):
-    startDate: str
-    endDate: str
-    startTime: Optional[str] = None
-    endTime: Optional[str] = None
+    startDate: date
+    endDate: date
+    startTime: Optional[time] = None
+    endTime: Optional[time] = None
+
+    @field_validator("startDate", "endDate", mode="before")
+    @classmethod
+    def parse_date(cls, v: object) -> object:
+        if isinstance(v, str) and "." in v:
+            return datetime.strptime(v, "%d.%m.%Y").date()
+        return v
+
+    @field_validator("startTime", "endTime", mode="before")
+    @classmethod
+    def parse_time(cls, v: object) -> object:
+        if isinstance(v, str) and v.count(":") == 1:
+            return datetime.strptime(v, "%H:%M").time()
+        return v
 
 
 class Schedules(BaseModel):
