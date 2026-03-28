@@ -32,6 +32,7 @@ class EventsTool(UriMCPTool):
         #TODO: In a real application, this data would likely come from a database or external API rather than a static file.
 
         data_dir = Path(os.environ.get("DATA_PATH", "../data"))
+        #data_dir = Path("../data")
 
         with open(data_dir / "uri_veranstaltungskalender.json", "r", encoding='utf-8') as f:
             events = json.load(f)
@@ -58,8 +59,14 @@ class EventsTool(UriMCPTool):
     async def get_events(self, keywords: Optional[list[str] | str] = None, date: Optional[str] = None, place: Optional[str] = None) -> list[EventResponse]:
         """
         Get events that contain specific keywords for a specific date and place.
-        """
+
+                Args:
+            keywords: List of keywords to match against event descriptions.
+            date: Date string to match against event dates. Can be in various formats (e.g., "2026-03-15", "März 2026"). "%d.%m.%Y", "%d.%m", "%d %B", "%Y", "%B %Y", "%B"
+            place: Place string to match against event locations im Kanton Uri.
         
+        """
+        print(f"get_events tool called with keywords={keywords}, date={date}, place={place}")       
         #await ctx.info(f"get_events tool called with keywords={keywords}, date={date}, place={place}")
 
         # Date can be in the format "YYYY-MM-DD" or "YYYY-MM" or "YYYY" or "März 2026" or "März" or "2026"
@@ -67,7 +74,8 @@ class EventsTool(UriMCPTool):
         normalized_keywords = self._normalize_keywords(keywords)
                 
         events = await self._search_events(keywords=normalized_keywords, date=parsed_date, place=place)
-
+        print(f"get_events tool returning {len(events)} events")       
+        
         return events
 
     
@@ -103,7 +111,12 @@ class EventsTool(UriMCPTool):
         return SequenceMatcher(None, text1.lower(), text2.lower()).ratio()
 
     async def _search_events(self, keywords: Optional[list[str]] = None, date: Optional[str] = None, place: Optional[str] = None) -> list[EventResponse]:
-        """Search for events using fuzzy matching with ranking based on keywords, date, and place."""
+        """Search for events using fuzzy matching with ranking based on keywords, date, and place.
+        Args:
+            keywords: List of keywords to match against event descriptions.
+            date: Date string to match against event dates. Can be in various formats (e.g., "2026-03-15", "März 2026"). "%d.%m.%Y", "%d.%m", "%d %B", "%Y", "%B %Y", "%B"
+            place: Place string to match against event locations.
+        """
 
         events = self.eventfeed.events()
         scored_events: list[tuple[float, EventResponse]] = []
