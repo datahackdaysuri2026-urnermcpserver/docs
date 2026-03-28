@@ -14,7 +14,10 @@ COPY pyproject.toml ./
 COPY src/ ./src/
 
 # Install dependencies
-RUN /root/.pixi/bin/pixi workspace platform add linux-64
+ARG TARGETARCH
+RUN /root/.pixi/bin/pixi workspace platform add $( \
+    [ "$TARGETARCH" = "arm64" ] && echo linux-aarch64 || echo linux-64 )
+
 RUN /root/.pixi/bin/pixi install
 
 # Define the data folder

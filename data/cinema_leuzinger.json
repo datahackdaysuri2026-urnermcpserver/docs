@@ -1,0 +1,88 @@
+{
+  "scraper_name": "Cinema Leuzinger",
+  "execution_time": "2026-03-28T00:32:58.551039",
+  "success": true,
+  "record_count": 10,
+  "data": [
+    {
+      "Datum": "2026-03-28",
+      "Zeit": "16:00",
+      "Titel": "HOPPERS",
+      "Typ": "Trickfilm Familienfilm Komödie",
+      "Sprache": "Deutsch",
+      "Dauer": "104 Min."
+    },
+    {
+      "Datum": "2026-03-28",
+      "Zeit": "18:00",
+      "Titel": "MELODIE",
+      "Typ": "Dokumentarfilm",
+      "Sprache": "Schweizerdeutsch",
+      "Dauer": "87 Min"
+    },
+    {
+      "Datum": "2026-03-28",
+      "Zeit": "20:00",
+      "Titel": "DER ASTRONAUT – PROJEKT HAIL MARY",
+      "Typ": "Drama Science Fiction Thriller",
+      "Sprache": "Deutsch",
+      "Dauer": "156 Min."
+    },
+    {
+      "Datum": "2026-03-29",
+      "Zeit": "16:00",
+      "Titel": "HOPPERS",
+      "Typ": "Trickfilm Familienfilm Komödie",
+      "Sprache": "Deutsch",
+      "Dauer": "104 Min."
+    },
+    {
+      "Datum": "2026-03-29",
+      "Zeit": "18:00",
+      "Titel": "NAMASTE SEELISBERG",
+      "Typ": "Dokumentation",
+      "Sprache": "Schweizerdeutsch",
+      "Dauer": "94 Min."
+    },
+    {
+      "Datum": "2026-03-29",
+      "Zeit": "20:00",
+      "Titel": "DER ASTRONAUT – PROJEKT HAIL MARY",
+      "Typ": "Drama Science Fiction Thriller",
+      "Sprache": "Deutsch",
+      "Dauer": "156 Min."
+    },
+    {
+      "Datum": "2026-04-01",
+      "Zeit": "14:00",
+      "Titel": "HOPPERS",
+      "Typ": "Trickfilm Familienfilm Komödie",
+      "Sprache": "Deutsch",
+      "Dauer": "104 Min."
+    },
+    {
+      "Datum": "2026-04-01",
+      "Zeit": "16:00",
+      "Titel": "DER SUPER MARIO GALAXY FILM",
+      "Typ": "Abenteuer Trickfilm Familienfilm",
+      "Sprache": "Deutsch",
+      "Dauer": "98 Min"
+    },
+    {
+      "Datum": "2026-04-01",
+      "Zeit": "18:00",
+      "Titel": "NAMASTE SEELISBERG",
+      "Typ": "Dokumentation",
+      "Sprache": "Schweizerdeutsch",
+      "Dauer": "94 Min."
+    },
+    {
+      "Datum": "2026-04-01",
+      "Zeit": "20:15",
+      "Titel": "THE PRESIDENT’S CAKE",
+      "Typ": "Drama",
+      "Sprache": "Arabisch mit deutschen Untertiteln",
+      "Dauer": "103 Min"
+    }
+  ]
+}
